@@ -1,0 +1,3 @@
+[submodule "themes/aglaus"]
+	path = themes/aglaus
+	url = git@github.com:dim0627/hugo_theme_aglaus.git
