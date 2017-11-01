@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html ⚡>
+  <head>
+    <meta charset="utf-8">
+<meta name="pinterest" content="nopin">
+<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+<meta name="theme-color" content="#263238">
+
+<meta name="generator" content="Hugo 0.30.2" />
+
+<link rel="apple-touch-icon" href="https://florentindubois.github.io/blog/images/logo.png">
+
+
+<link rel="canonical" href="https://florentindubois.github.io/blog/posts/how-use-systemd-boot-as-bootloader/">
+
+
+    
+    <link href="https://fonts.googleapis.com/css?family=Lobster|Lato:400,700" rel="stylesheet">
+    
+    <title>How use systemd-boot as bootloader - Another IT blog</title>
+    <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    
+    
+    
+<meta name="description" content="I just installed (one more time) my laptop and this time, I switch from GRUB to systemd-boot. I prevent you that all commands that I gonna show you are used for an Arch Linux installation. They may work for you, but refers you to the documentation of your distribution before begin.So, we can start now.Set up The configuration of my laptop is pretty simple, there are 2 OS, one is Microsoft Windows and the other one is Arch Linux.">
+
+<meta property="og:title" content="How use systemd-boot as bootloader - Another IT blog">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://florentindubois.github.io/blog/posts/how-use-systemd-boot-as-bootloader/">
+<meta property="og:image" content="https://florentindubois.github.io/blog/images/default.png">
+<meta property="og:site_name" content="Another IT blog">
+<meta property="og:description" content="I just installed (one more time) my laptop and this time, I switch from GRUB to systemd-boot. I prevent you that all commands that I gonna show you are used for an Arch Linux installation. They may work for you, but refers you to the documentation of your distribution before begin.So, we can start now.Set up The configuration of my laptop is pretty simple, there are 2 OS, one is Microsoft Windows and the other one is Arch Linux.">
+<meta property="og:locale" content="ja_JP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="Another IT blog">
+<meta name="twitter:url" content="https://florentindubois.github.io/blog/posts/how-use-systemd-boot-as-bootloader/">
+<meta name="twitter:title" content="How use systemd-boot as bootloader - Another IT blog">
+<meta name="twitter:description" content="I just installed (one more time) my laptop and this time, I switch from GRUB to systemd-boot. I prevent you that all commands that I gonna show you are used for an Arch Linux installation. They may work for you, but refers you to the documentation of your distribution before begin.So, we can start now.Set up The configuration of my laptop is pretty simple, there are 2 OS, one is Microsoft Windows and the other one is Arch Linux.">
+<meta name="twitter:image" content="https://florentindubois.github.io/blog/images/default.png">
+
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "NewsArticle",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id":"https://florentindubois.github.io/blog/"
+    },
+    "headline": "How use systemd-boot as bootloader - Another IT blog",
+    "image": {
+      "@type": "ImageObject",
+      "url": "https://florentindubois.github.io/blog/images/default.png",
+      "height": 800,
+      "width": 800
+    },
+    "datePublished": "2017-11-01T18:50:35JST",
+    "dateModified": "2017-11-01T18:50:35JST",
+    "author": {
+      "@type": "Person",
+      "name": "Another IT blog"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Another IT blog",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://florentindubois.github.io/blog/images/logo.png",
+        "width": 600,
+        "height": 60
+      }
+    },
+    "description": "I just installed (one more time) my laptop and this time, I switch from GRUB to systemd-boot. I prevent you that all commands that I gonna show you are used for an Arch Linux installation. They may work for you, but refers you to the documentation of your distribution before begin.
+So, we can start now.
+Set up The configuration of my laptop is pretty simple, there are 2 OS, one is Microsoft Windows and the other one is Arch Linux."
+  }
+</script>
+
+
+    <style amp-custom>
+      html { font-size: 18px;}@media (max-width: 768px) { html { font-size: 15px; }}body { font-family: Lato,'Hiragino Kaku Gothic Pro',メイリオ,Meiryo,sans-serif; font-size: inherit; margin: 0; color: #263238;}html, body { margin: 0;}a { text-decoration: none; color: #e91e63;}p { margin: 0;}ul,ol { margin: 0; padding: 0;}h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 700;}h1 { font-size: 1.8rem; line-height: 2rem; margin: 1.5rem 0; }h2 { font-size: 1.4rem; line-height: 2rem; margin: 1.5rem 0; }h3 { font-size: 1.2rem; line-height: 1.5rem; margin: 1.5rem 0; }h4, h5, h6 { font-size: 1rem; line-height: 1.5rem; margin: 1.5rem 0; }.clearfix::after { content: ''; display: block; clear: both;}main { display: block;}/* Layouts */.l-header { padding: .5rem 0; margin-bottom: 2rem; border-bottom: 1px dashed #cfd8dc; text-align: center;}.l-footer { font-size: .8rem; padding: 1rem 0; border-top: 1px dashed #cfd8dc;}.l-container { max-width: 42rem; margin: 0 auto; padding: 0 1rem;}/* Parts:logo */.p-logo { font-family: Lobster, cursive;}.p-logo a { color: #000; font-size: 1.6rem; line-height: 2rem;}/* Parts:section */section { border-top: 2px solid #eceff1; padding: 1.5rem 0;}section>header { text-transform: uppercase; font-weight: 700; margin-bottom: 2rem; text-align: center;}section>header span { display: inline-block; background-color: #000; color: #fff; letter-spacing: 3px; font-size: .7rem; padding: .5rem .75rem;}/* Parts:facts */.p-facts { list-style: none; font-size: .8rem; margin-bottom: 1rem;}.p-facts:last-child { margin-bottom: 0;}.p-facts li { display: inline-block; margin-right: .5rem; text-transform: uppercase;}.p-facts li header { margin-bottom: .25rem; font-weight: 700;}.p-facts li header a { color: #000; text-decoration: underline;}.p-facts li li { display: inline-block; margin-right: .5rem;}.p-facts li li::after { content: ',';}.p-facts li li:last-child::after { content: '';}/* Parts:crumb */.p-crumb { list-style: none; margin-bottom: 1rem; font-size: .8rem; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}.p-crumb:last-child { margin-bottom: 0;}.p-crumb li { display: inline;}.p-crumb li::after { content: '›'; margin: 0 .5rem;}.p-crumb li:last-child::after { content: '';}/* Parts:page-title */.p-page-title { margin-bottom: 2rem;}.p-page-title .title { margin-bottom: .5rem;}/* Parts:share */.p-share { margin-bottom: 1.5rem;}.p-share a { display: inline-block; text-align: center; padding: .5rem .5rem; margin-right: .25rem; font-size: .6rem; background-color: #eceff1; font-weight: 700k}.p-share a.ht { color: #00a4de; }.p-share a.fb { color: #3b5998; }.p-share a.tw { color: #1da1f2; }.p-share a.gp { color: #dd4b39; }.p-share a.ln { color: #00c300; }.p-share a.ht::before { content: 'Hatena'; }.p-share a.fb::before { content: 'Facebook'; }.p-share a.tw::before { content: 'Twitter'; }.p-share a.gp::before { content: 'Google+'; }.p-share a.ln::before { content: 'LINE'; }/* Parts:terms */.p-terms { padding-left: 2rem;}/* Parts:paginator */.p-paginator { text-align: center; margin-bottom: 3rem; padding-top: 2rem;}.p-paginator a { display: inline-block; border: 2px solid #eceff1; color: #263238; line-height: 2rem; padding: 0 1rem;}/* Parts:article */.p-articles { list-style: none;}.p-articles>li { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px dashed #cfd8dc;}.p-articles>li:last-child { border-bottom: none; padding-bottom: 0;}.p-articles.thin>li { margin-bottom: 1rem; padding-bottom: 1rem;}article .article-header { display: table-cell; height: 6rem; vertical-align: middle;}article .title { margin: 0; margin-bottom: .5rem; font-size: 1.4rem; line-height: 2rem;}article .title a { color: #000;}article .header-wrapper { margin-bottom: 1.5rem;}article .thumbnail { display: block; background-position: center; background-size: cover; background-image: url(https://florentindubois.github.io/blog/images/default.jpg); width: 6rem; height: 6rem; border-radius: 50%; box-shadow: 0 0 3px 0 #333 inset; float: left; margin-right: 1rem;}article .summary { margin-bottom: 1.5rem;}article .readmore { text-align: center;}article .readmore a { font-size: .8rem; color: #000; text-decoration: underline;}article.li.sm .header-wrapper { margin-bottom: 0;}.article-body h2 { padding: 1rem 0; border-bottom: 2px solid #eceff1;}.article-body h2:first-child { margin-top: 0; }.article-body h3 { color: #cddc39;}.article-body h4 { border-left: solid .25rem #cddc39; padding: 0 .5rem;}.article-body p { margin: 1.5rem 0; line-height: 1.5rem;}.article-body a { text-decoration: underline;}.article-body ul,.article-body ol { padding-left: 1.5rem;}.article-body code { display: inline-block; font-family: Menlo, consolas, monospace; background-color: #eceff1; font-size: .8rem; padding: 0 .5rem; line-height: 1.5rem;}.article-body pre { margin: 1.5rem 0; padding: 1.5rem; font-size: .8rem; background-color: #263238; color: #fff; overflow: auto;}.article-body pre code { background-color: transparent;}.article-body blockquote { margin: 1.5rem 0; padding: .5rem 0; font-size: .8rem; border-top: 1px solid #eceff1; border-bottom: 1px solid #eceff1; color: #607d8b;}.article-body blockquote p { margin: .5rem 0; line-height: 1rem;}.article-body strong { box-shadow: 0 -.5rem 0 0 #f06292 inset;}.article-body em { font-style: normal; font-weight: 700; color: #ff5722;}.article-body figure { margin: 1.5rem -2rem; }.article-body figure.left,.article-body figure.right { width: 15rem; height: 12rem; margin-top: 0; margin-left: 0; margin-right: 0;}.article-body figure.left { float: left; margin-right: 1rem; margin-left: -2rem; }.article-body figure.right { float: right; margin-left: 1rem; margin-right: -2rem; }@media (max-width: 768px) { .article-body figure { margin: 1.5rem -1rem; } .article-body figure.left, .article-body figure.right { float: none; margin: 0 -1rem; width: auto; height: auto; }}.article-body figcaption { padding: .5rem 0; font-size: .8rem; text-align: center;}.article-body figcaption a { color: #263238;}
+
+      
+    </style>
+  </head>
+
+  <body>
+    
+    
+    
+
+    <header class="l-header">
+      <div class="l-container">
+        <div class="h-logo p-logo">
+          <a href="https://florentindubois.github.io/blog/" class="h-logo">Another IT blog</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      
+<div class="l-container">
+  <article class="single article-dda46913fd7e14a9a674867fc034d379">
+  <div class="header-wrapper">
+    <a href="https://florentindubois.github.io/blog/posts/how-use-systemd-boot-as-bootloader/" class="thumbnail" title="How use systemd-boot as bootloader"></a>
+    <header class="article-header">
+      <div class="clearfix">
+        <h1 class="title">How use systemd-boot as bootloader</h1>
+        <ul class="p-facts">
+          <li><time datetime="2017-11-01T18:50:35JST">Nov 1, 2017</time></li>
+          <li><a href="https://florentindubois.github.io/blog/posts/">posts</a></li>
+          
+        </ul>
+      </div>
+    </header>
+  </div>
+
+  <aside class="p-share">
+  <a href="http://b.hatena.ne.jp/add?mode=confirm&url=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f&title=How%20use%20systemd-boot%20as%20bootloader" title="はてなブックマーク" class="ht" target="_blank" rel="nofollow"></a>
+  <a href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f&t=How%20use%20systemd-boot%20as%20bootloader" title="Facebookでシェア" class="fb" target="_blank" rel="nofollow"></a>
+  <a href="http://twitter.com/intent/tweet?url=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f&text=How%20use%20systemd-boot%20as%20bootloader&tw_p=tweetbutton" title="Twitterでシェア" class="tw" target="_blank" rel="nofollow"></a>
+  <a href="https://plus.google.com/share?url=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f" title="Google Plusでシェア" class="gp" target="_blank" rel="nofollow"></a>
+  <a href="http://line.me/R/msg/text/?How%20use%20systemd-boot%20as%20bootloader https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f" title="LINEでシェア" class="ln" target="_blank" rel="nofollow"></a>
+</aside>
+
+
+  <div class="article-body">
+
+<p>I just installed (one more time) my laptop and this time, I switch from <a href="https://wiki.archlinux.org/index.php/GRUB">GRUB</a> to <a href="https://wiki.archlinux.org/index.php/systemd-boot">systemd-boot</a>. I prevent you that all commands that I gonna show you are used for an <a href="https://www.archlinux.org/">Arch Linux</a> installation. They may work for you, but refers you to the documentation of your distribution before begin.</p>
+
+<p>So, we can start now.</p>
+
+<h2 id="set-up">Set up</h2>
+
+<p>The configuration of my laptop is pretty simple, there are 2 OS, one is Microsoft Windows and the other one is Arch Linux. I first installed Windows, it is easier because it creates what it need on an empty disk. After that I set up my Linux to the <a href="https://wiki.archlinux.org/index.php/installation_guide#Boot_loader">installation step</a> of the bootloader. Futhermore, all are in only one solid state drive that is cut like this :</p>
+
+<pre><code>$ lsblk
+
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    0 931,5G  0 disk
+├─sda1   8:1    0   450M  0 part
+├─sda2   8:2    0   100M  0 part /boot/efi
+├─sda3   8:3    0    16M  0 part
+├─sda4   8:4    0   128G  0 part
+├─sda5   8:5    0   600G  0 part /home
+├─sda6   8:6    0     3G  0 part /boot
+└─sda7   8:7    0   200G  0 part /
+</code></pre>
+
+<p>Tips: I used the <code>lsblk</code> command to display information about my SSD&rsquo;s partitions.</p>
+
+<p>From here, we can see that Windows has 4 partitions that are <code>/dev/sda1</code>, <code>/dev/sda2</code>, <code>/dev/sda3</code> and <code>/dev/sda4</code> and Arch Linux got 3 partitions <code>/dev/sda5</code>, <code>/dev/sda6</code>, <code>/dev/sd7</code> and share one with Windows which is <code>/dev/sda2</code>.</p>
+
+<p>Now, take a look of the file-system of each that is pretty important for next movements.</p>
+
+<pre><code>$ lsblk -fs
+
+sda1  ntfs   Récupération &lt;uuid&gt;
+└─sda
+sda2  vfat                &lt;uuid&gt; /boot/efi
+└─sda
+sda3
+└─sda
+sda4  ntfs   OS 10        &lt;uuid&gt;
+└─sda
+sda5  btrfs               &lt;uuid&gt; /home
+└─sda
+sda6  btrfs               &lt;uuid&gt; /boot
+└─sda
+sda7  btrfs               &lt;uuid&gt; /
+
+</code></pre>
+
+<p>Tips: I used <code>lsblk</code> as well to show me file-system encoding with the <code>-fs</code> option.</p>
+
+<p>As we can observe, all my Linux system partitions are based on the <code>btrfs</code> except the <code>/dev/sda2</code> partition that is the partition known as ESP, I will explain this later and my Windows system use <code>vfat</code> (aka <code>fat32</code>) and <code>ntfs</code>. I do not wanna that my ESP partition will be <code>/boot</code>, I prefer to see it on <code>/boot/efi</code> I thinks that is more revelant and reliable.</p>
+
+<h3 id="esp-what-is-it">ESP? What is it?</h3>
+
+<p>ESP is an acronym which mean <code>EFI System Partition</code> and that is on this partition we need to install the Linux bootloader to take care about others operating systems and our Linux. Furthermore, this partition <strong>must</strong> be in <code>fat32</code> because your bios need to read it, in order to boot on the selected entrie which is <code>.efi</code> file.</p>
+
+<p>Take a look about this partition:</p>
+
+<pre><code>$ tree /boot/efi -d
+
+/boot/efi
+├── EFI
+│   ├── Boot
+│   ├── Microsoft
+│   │   ├── Boot
+│   │   │   ├── fr-FR
+│   │   │   ├── ... others languages directories that I omitted ...
+│   │   │   └── Resources
+│   │   │       └── fr-FR
+│   │   └── Recovery
+│   └── systemd
+└── loader
+    └── entries
+
+</code></pre>
+
+<p>Tips: I used the tree command to show you a tree of my file-system from <code>/boot/efi</code> with <code>-d</code> which mean only directories.</p>
+
+<p>This is, what you got when you finished to install the bootloader, here we only saw directories.</p>
+
+<p>As we can see, there is one pretty important folder which is <code>EFI</code>, on this folder there are all generated folders and files from Windows and our Linux. Furthermore, there is another folder which is <code>loader</code> that was generated when you install the systemd bootloader, we will see it later.</p>
+
+<h2 id="requirements">Requirements</h2>
+
+<p>Now, we are good to start, before install the systemd bootloader on Arch Linux, we have to check if the Linux <strong>has access to the efi variables</strong> and we gonna <strong>copy all required files</strong> to boot.</p>
+
+<h3 id="check-access-to-efi-variables">Check access to efi variables</h3>
+
+<p>So, we need to check if the folder <code>/sys/firmware/efi</code> exists, according to the <a href="https://wiki.archlinux.org/index.php/Unified_Extensible_Firmware_Interface#Requirements_for_UEFI_variable_support">Arch Wiki</a>. Normaly, if you had boot on your live linux on uefi mode all are good.</p>
+
+<p>You may have something like this:</p>
+
+<pre><code>$ ls -lisrt /sys/firmware/efi
+
+total 0
+  12 0 drwxr-xr-x 2 root root    0 20 mai   15:33 efivars
+6497 0 drwxr-xr-x 7 root root    0 20 mai   17:23 runtime-map
+6494 0 -r--r--r-- 1 root root 4096 20 mai   17:23 runtime
+6492 0 -r-------- 1 root root 4096 20 mai   17:23 systab
+6495 0 -r--r--r-- 1 root root 4096 20 mai   17:23 config_table
+6493 0 -r--r--r-- 1 root root 4096 20 mai   17:23 fw_vendor
+6496 0 -r--r--r-- 1 root root 4096 20 mai   17:23 fw_platform_size
+</code></pre>
+
+<p>Tips: the <code>ls</code> command show you files on a directories</p>
+
+<p>All are good? go to the next requirements.</p>
+
+<p>Oh no! You cannot acces to this directory, you have to reboot in uefi mode.</p>
+
+<h3 id="copy-required-files">Copy required files</h3>
+
+<p>We have to copy each initramfs and vmlinuz from each kernel in order to boot. I will only copy files for the <code>linux</code> kernel here.</p>
+
+<p>Commands to do:</p>
+
+<pre><code>$ cp /boot/vmlinuz-linux /boot/efi/vmlinuz-linux
+$ cp /boot/initramfs-linux.img /boot/efi/initramfs-linux.img
+$ cp /boot/initramfs-linux-fallback.img /boot/efi/initramfs-linux-fallback.img
+</code></pre>
+
+<h2 id="installation">Installation</h2>
+
+<p>Finaly, we gotcha. Now, we had check that all requirements are satisfied, we can installed the bootloader.</p>
+
+<pre><code>$ bootctl --path=/boot/efi install
+
+Copied &quot;/usr/lib/systemd/boot/efi/systemd-bootx64.efi&quot; to &quot;/boot/efi/EFI/systemd/systemd-bootx64.efi&quot;.
+Copied &quot;/usr/lib/systemd/boot/efi/systemd-bootx64.efi&quot; to &quot;/boot/efi/EFI/BOOT/BOOTX64.EFI&quot;.
+...
+</code></pre>
+
+<p>Tips: I used the <code>--path=/boot/efi</code> option because my ESP is located as <code>/boot/efi</code>, by default it wanna install on <code>/boot</code>.</p>
+
+<p>We see output from the command that said to us which files were copied and a message to report to us that all are good. However, we see a message which mean that you were installed your bootloader on a no-EFI partition. You have to recheck on what partition we have to install the partiton, is it an ESP ? Recheck as well, all requirements.</p>
+
+<h3 id="create-linux-entries">Create Linux entries</h3>
+
+<p>Now, we have to create entries for our Linux to boot in. Do you remenber the previous schema about the ESP partition?</p>
+
+<pre><code>$ tree /boot/efi -d
+
+/boot/efi
+├── EFI
+│   ├── Boot
+│   ├── Microsoft
+│   │   ├── Boot
+│   │   │   ├── fr-FR
+│   │   │   ├── ... others languages directories that I omitted ...
+│   │   │   └── Resources
+│   │   │       └── fr-FR
+│   │   └── Recovery
+│   └── systemd
+└── loader
+    └── entries
+
+</code></pre>
+
+<p>Tips: I used the tree command to show you a tree of my file-system from <code>/boot/efi</code> with <code>-d</code> which mean only directories.</p>
+
+<p>We need to create files with extension <code>.conf</code>, two per kernel. There are one for the casual use and the other one for the fallback use. We have to put them in the directory <code>/boot/efi/loader/entries</code>.</p>
+
+<p>The casual use that I named <code>arch-linux.conf</code>:</p>
+
+<pre><code>title 	Arch Linux
+linux 	/vmlinuz-linux
+initrd	/initramfs-linux.img
+options   root=UUID=&lt;uuid&gt; rw
+</code></pre>
+
+<p>Tips: To get the <code>uuid</code> of the root partition you can use the command <code>lsblk -fs</code></p>
+
+<p>The fallback use that I named <code>arch-linux-fallback.conf</code>:</p>
+
+<pre><code>title 	Arch Linux (fallback)
+linux 	/vmlinuz-linux
+initrd	/initramfs-linux-fallback.img
+options   root=UUID=&lt;uuid&gt; rw
+
+</code></pre>
+
+<p>Tips: To get the <code>uuid</code> of the root partition you can use the command <code>lsblk -fs</code></p>
+
+<p>Files are pretty simple, we can take notice of the path of the <code>vmlinuz</code> and the <code>initramfs</code> are absolute and begin at the top of the ESP partition.</p>
+
+<h3 id="update-bootloader-configuration">Update bootloader configuration</h3>
+
+<p>If you wanna update the timeout or change the default selected entrie that I did, you have to modify the file located at <code>/boot/efi/loader/loader.conf</code>, here there is an example:</p>
+
+<pre><code>default arch-linux
+timeout 10
+</code></pre>
+
+<p>I set a timeout of <code>10</code> seconds and my default entrie is <code>arch-linux</code>.</p>
+
+<p>Now, you can reboot without worried systemd-boot will automatically find Windows and Arch Linux.</p>
+
+<p>If you wanna more information, refers you to the great <a href="https://wiki.archlinux.org/index.php/systemd-boot">Arch Wiki</a>, it has so many secrets inside that they just ask to be discover.</p>
+
+<h2 id="bonus-update-on-linux-kernel-or-systemd-update">Bonus: Update on Linux kernel or systemd update</h2>
+
+<p>On Arch Linux, the package manager knows as <code>pacman</code> may be hooked to do a command when a package is upgraded. To upgrade our <code>vmlinuz</code>, <code>initiramfs</code> files and systemd-boot configuration we need to create 4 files on the directory <code>/etc/pacman.d/hooks</code> (you may have to create it). Each file has the following structure :</p>
+
+<pre><code>[Trigger]
+Type = Package
+Operation = Upgrade
+Target = &lt;package&gt;
+
+[Action]
+Description = &lt;description&gt;
+When = PostTransaction
+Exec = &lt;command&gt;
+
+</code></pre>
+
+<p>So, we have to write hooks when the package manager update the following packages which are <code>linux</code> and <code>systemd</code>. Followings there are hooks for the <code>systemd</code> upgrade:</p>
+
+<p>Hook that I named <code>systemd-boot.hook</code>:</p>
+
+<pre><code>[Trigger]
+Type = Package
+Operation = Upgrade
+Target = systemd
+
+[Action]
+Description = Updating systemd-boot ...
+When = PostTransaction
+Exec = /usr/bin/bootctl --path=/boot/efi update
+</code></pre>
+
+<p>Tips: Do you remember that I have to say where is my ESP partition with <code>--path=/boot/efi</code> option?</p>
+
+<p>So, we can take notice from this hook that all binaries <strong>must</strong> have absolute path, it is needed. Furthermore, it looks like a <code>systemd</code> configuration file, isn&rsquo;t it?</p>
+
+<p>Now, hooks for the <code>linux</code> package upgrade, do not forget to do the same for each Linux kernel that you had installed.</p>
+
+<p>Hook that I named <code>vmlinuz-linux.hook</code>:</p>
+
+<pre><code>[Trigger]
+Type = Package
+Operation = Upgrade
+Target = linux
+
+[Action]
+Description = Updating vmlinuz-linux ...
+When = PostTransaction
+Exec = /usr/bin/cp -f /boot/vmlinuz-linux /boot/efi/vmlinuz-linux
+</code></pre>
+
+<p>Hook that I named <code>initramfs-linux.hook</code>:</p>
+
+<pre><code>[Trigger]
+Type = Package
+Operation = Upgrade
+Target = linux
+
+[Action]
+Description = Updating initramfs-linux ...
+When = PostTransaction
+Exec = /usr/bin/cp -f /boot/initramfs-linux.img /boot/efi/initramfs-linux.img
+</code></pre>
+
+<p>Hook that I named <code>initramfs-linux-fallback.hook</code>:</p>
+
+<pre><code>[Trigger]
+Type = Package
+Operation = Upgrade
+Target = linux
+
+[Action]
+Description = Updating initramfs-linux-fallback ...
+When = PostTransaction
+Exec = /usr/bin/cp -f /boot/initramfs-linux-fallback.img /boot/efi/initramfs-linux-fallback.img
+
+</code></pre>
+
+<p>Now, we can enjoy our beautiful systemd bootloader that update automaticaly.</p>
+</div>
+
+  <aside class="p-share">
+  <a href="http://b.hatena.ne.jp/add?mode=confirm&url=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f&title=How%20use%20systemd-boot%20as%20bootloader" title="はてなブックマーク" class="ht" target="_blank" rel="nofollow"></a>
+  <a href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f&t=How%20use%20systemd-boot%20as%20bootloader" title="Facebookでシェア" class="fb" target="_blank" rel="nofollow"></a>
+  <a href="http://twitter.com/intent/tweet?url=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f&text=How%20use%20systemd-boot%20as%20bootloader&tw_p=tweetbutton" title="Twitterでシェア" class="tw" target="_blank" rel="nofollow"></a>
+  <a href="https://plus.google.com/share?url=https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f" title="Google Plusでシェア" class="gp" target="_blank" rel="nofollow"></a>
+  <a href="http://line.me/R/msg/text/?How%20use%20systemd-boot%20as%20bootloader https%3a%2f%2fflorentindubois.github.io%2fblog%2fposts%2fhow-use-systemd-boot-as-bootloader%2f" title="LINEでシェア" class="ln" target="_blank" rel="nofollow"></a>
+</aside>
+
+
+  <footer class="article-footer">
+    <section>
+      <ol class="p-crumb">
+        <li><a href="https://florentindubois.github.io/blog/">Another IT blog</a></li>
+        
+        <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="https://florentindubois.github.io/blog/posts/" itemprop="url"><span itemprop="title">posts</span></a></li>
+        
+        <li>How use systemd-boot as bootloader</li>
+      </ol>
+
+      
+      
+      
+      
+      
+      
+    </section>
+  </footer>
+</article>
+
+
+
+  
+  
+</div>
+
+
+    </main>
+
+    
+
+    <footer class="l-footer">
+      <div class="l-container">
+        <p><span class="h-logo">&copy; Another IT blog</span></p>
+        <aside>
+          <p>Powered by <a href="https://gohugo.io/">Hugo</a>.</p>
+          <p><a href="https://github.com/dim0627/hugo_theme_aglaus" class="h-logo">Aglaus</a> designed by <a href="http://yet.unresolved.xyz/">Daisuke Tsuji</a>.</p>
+        </aside>
+      </div>
+    </footer>
+
+    <a href="#" class="p-movetop" title="ページ上部へ戻る" rel="nofollow"></a>
+  </body>
+</html>
+
